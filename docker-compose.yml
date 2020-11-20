@@ -13,7 +13,7 @@ services:
         depends_on:
             - rpc-php-fpm
         ports:
-            - 8084:80
+            - 8097:80
         networks:
             - rpc-network
     rpc-php-fpm:
@@ -48,8 +48,8 @@ services:
             RABBITMQ_DEFAULT_USER: rabbit
             RABBITMQ_DEFAULT_PASS: rabbit
         ports:
-            - "8063:15672"
-            - "5674:5672"
+            - "8095:15672"
+            - "5675:5672"
         volumes:
             - ".docker/development/rabbit/enabled_plugins:/etc/rabbitmq/enabled_plugins"
         networks:
