@@ -1,0 +1,27 @@
+FROM php:7.4.10-fpm
+
+RUN apt-get update \
+    && apt-get install -y \
+        librabbitmq-dev \
+        libssh-dev \
+        unzip \
+    && docker-php-ext-install \
+        bcmath \
+        sockets \
+        pdo_mysql \
+        pcntl \
+    && pecl install amqp-1.9.4 \
+        redis \
+    && docker-php-ext-enable amqp \
+        redis
+
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
+COPY ./php/fpm/default.ini /usr/local/etc/php/conf.d/default.ini
+
+COPY ./php/fpm/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+
+RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+
+WORKDIR /var/www/app
