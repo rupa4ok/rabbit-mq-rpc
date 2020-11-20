@@ -26,9 +26,6 @@ services:
         environment:
             XDEBUG_CONFIG: "remote_host=192.168.221.1"
             PHP_IDE_CONFIG: "serverName=Docker"
-        depends_on:
-            - rpc-mysql
-            - rpc-redis
         networks:
             - rpc-network
     rpc-php-cli:
@@ -42,9 +39,6 @@ services:
         environment:
             XDEBUG_CONFIG: "remote_host=192.168.221.1"
             PHP_IDE_CONFIG: "serverName=Docker"
-        depends_on:
-            - rpc-mysql
-            - rpc-redis
         networks:
             - rpc-network
     rpc-rabbitmq:
