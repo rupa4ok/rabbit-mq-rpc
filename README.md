@@ -10,7 +10,7 @@ RabbitMQ to build an RPC system: a client and a scalable RPC server. RPC client 
 
 ![rpc](docs/rpc.png)
 
-RPC will work like this:
+####RPC will work like this:
 
  - When the Client starts up, it creates an anonymous exclusive callback queue.
  - For an RPC request, the Client sends a message with two properties: reply_to, which is set to the callback queue and correlation_id, which is set to a unique value for every request.
