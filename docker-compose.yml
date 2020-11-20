@@ -1,0 +1,66 @@
+version: "3"
+services:
+    rpc-nginx:
+        build:
+            context: ./.docker/development
+            dockerfile: nginx.docker
+        container_name: rpc-nginx
+        volumes:
+            - "$PWD/app:/var/www/app:rw"
+        environment:
+            VIRTUAL_HOST: "lead.auction"
+            PHP_IDE_CONFIG: "serverName=lead.auction"
+        depends_on:
+            - rpc-php-fpm
+        ports:
+            - 8084:80
+        networks:
+            - rpc-network
+    rpc-php-fpm:
+        build:
+            context: ./.docker/development
+            dockerfile: php-fpm.docker
+        container_name: rpc-phpfpm
+        volumes:
+            - "$PWD/app:/var/www/app:rw"
+        environment:
+            XDEBUG_CONFIG: "remote_host=192.168.221.1"
+            PHP_IDE_CONFIG: "serverName=Docker"
+        depends_on:
+            - rpc-mysql
+            - rpc-redis
+        networks:
+            - rpc-network
+    rpc-php-cli:
+        build:
+            context: ./.docker/development
+            dockerfile: php-cli.docker
+        container_name: rpc-phpcli
+        volumes:
+            - "$PWD/app:/var/www/app:rw"
+            - "$PWD/.data/composer:/root/.composer/cache"
+        environment:
+            XDEBUG_CONFIG: "remote_host=192.168.221.1"
+            PHP_IDE_CONFIG: "serverName=Docker"
+        depends_on:
+            - rpc-mysql
+            - rpc-redis
+        networks:
+            - rpc-network
+    rpc-rabbitmq:
+        image: rabbitmq:3-management
+        environment:
+            RABBITMQ_ERLANG_COOKIE: SWQOKODSQALRPCLNMEQG
+            RABBITMQ_DEFAULT_USER: rabbit
+            RABBITMQ_DEFAULT_PASS: rabbit
+        ports:
+            - "8063:15672"
+            - "5674:5672"
+        volumes:
+            - ".docker/development/rabbit/enabled_plugins:/etc/rabbitmq/enabled_plugins"
+        networks:
+            - rpc-network
+
+networks:
+    rpc-network:
+        external: true
