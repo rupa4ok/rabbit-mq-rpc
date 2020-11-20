@@ -21,8 +21,6 @@ RPC will work like this:
  - We might want to run more than one server process. In order to spread the load equally over multiple servers we need to set the prefetch_count setting in $channel.basic_qos.
  - We use basic_consume to access the queue. Then we enter the while loop in which we wait for request messages, do the work and send the response back.
 
-##Install
-
 ###Warning:
 
 This package doesn't try to solve more complex (but important) problems, like:
