@@ -10,7 +10,7 @@ RabbitMQ to build an RPC system: a client and a scalable RPC server. RPC client 
 
 ![rpc](docs/rpc.png)
 
-####RPC will work like this:
+#### RPC will work like this:
 
  - When the Client starts up, it creates an anonymous exclusive callback queue.
  - For an RPC request, the Client sends a message with two properties: reply_to, which is set to the callback queue and correlation_id, which is set to a unique value for every request.
@@ -21,7 +21,7 @@ RabbitMQ to build an RPC system: a client and a scalable RPC server. RPC client 
  - We might want to run more than one server process. In order to spread the load equally over multiple servers we need to set the prefetch_count setting in $channel.basic_qos.
  - We use basic_consume to access the queue. Then we enter the while loop in which we wait for request messages, do the work and send the response back.
 
-###Warning:
+### Warning:
 
 This package doesn't try to solve more complex (but important) problems, like:
  1) How should the client react if there are no servers running?
@@ -38,9 +38,9 @@ Bearing that in mind, consider the following advice:
 3) Handle error cases. How should the client react when the RPC server is down for a long time?
 4) When in doubt avoid RPC. If you can, you should use an asynchronous pipeline - instead of RPC-like blocking, results are asynchronously pushed to a next computation stage.
 
-##Common problems faced by PHP developers in consuming an AMQP message
+## Common problems faced by PHP developers in consuming an AMQP message
 
-####The memory problem
+#### The memory problem
 
 A normal PHP script serves a single request, then the script dies naturally as the execution of provided instructions is completed, and the allocated memory is freed. In a PHP consumer we have to execute a long running PHP process: this will cause us to face a memory problem, because PHP is not properly designed to achieve this goal, and this will cause trouble for sure if we don’t pay attention to the script code.
 
@@ -50,19 +50,19 @@ That’s not a problem at all in a normal case, where the script ends and the me
 
 If you are interested in more accurate details and information, I suggest reading this article: it’s pretty old, but explains this issue very well.
 
-####Multiple consumers
+#### Multiple consumers
 
 For a PHP consumer it’s very hard to process multiple messages at the same time, because PHP runs in a single thread, and a proper async/await interface is not well supported or mature. Again, PHP is not designed for this scope and this could be a limit in some circumstances: scaling is really hard.
 
 Running multiple PHP consumers is not a good idea as well: given a framework-based application, it could use a huge amounts of RAM, easily GBs. If during the “waiting” time there are no messages, it’s going to be a serious waste of memory that could be used instead for some other resources or requests.
 
-####Updating the codebase
+#### Updating the codebase
 
 Another common problem with PHP consumers is when we need to update the codebase: if we deploy something that changes the code and some service used by the consumer, we can easily break the integrity of the entire long running process execution.
 
 We have to shutdown all consumers and sometimes we must force kill processes: they could hang due to memory corruption, so we have to start them again with a script (obviously) that will trigger automatically during the deploy or within the pipeline.
 
-####The network problem
+#### The network problem
 
 When we work with a network based service, we have to expect failures and we must have some reconnection policies. A common problem when we have a long running PHP process is a broken pipe (in a very popular bundle this is still an issue due to PHP nature, see here) because we can’t use a feature that is exactly made for this sort of issues resolution, the Heartbeat. In a AMPQ server connection, normally we have to implement a sort “ping” mechanism, this is a mention of the [official RabbitMQ documentation:](https://www.rabbitmq.com/heartbeats.html)
 
@@ -70,7 +70,7 @@ Network can fail in many ways, sometimes pretty subtle (e.g. high ratio packet l
 
 This is something that is still not possible in PHP and obviously cause troubles in our PHP consumer.
 
-####Some solution
+#### Some solution
 
 We ran this configuration for some time and we experienced ALL of these problems randomly during the normal application flows. We decided to find a good solution and we ended up with an external CLI command processor written in another language and designed for the scope.
 
