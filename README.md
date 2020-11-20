@@ -1,5 +1,11 @@
 # Remote procedure call (RPC) using php-amqplib and Rabbit MQ
 
+Remote Procedure Call (RPC) is a design paradigm that allow two entities to communicate over a communication channel in a general request-response mechanism.
+
+Simplest RPC implementation looks like Figure 1. In this case, the client (or caller) and the server (or callee) are separated by a physical network. The main components of the system are the client routine/program, the client stub, the server routine/program, the server stub, and the network routines. 
+
+![simple_rpc](docs/simple_rpc.png)
+
 RabbitMQ to build an RPC system: a client and a scalable RPC server. RPC client sends an RPC request to RPC Server and blocks until the answer is received:
 
 ![rpc](docs/rpc.png)
