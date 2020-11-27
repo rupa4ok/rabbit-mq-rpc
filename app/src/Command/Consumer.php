@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\AmqpConnection;
 use App\AmqpHelper;
 use PhpAmqpLib\Message\AMQPMessage;
 use Symfony\Component\Console\Command\Command;
@@ -20,7 +19,7 @@ final class Consumer extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $connection = new AmqpHelper(AmqpConnection::connect());
+        $connection = new AmqpHelper();
         $connection->prefetch();
         $connection->initChannel('example');
 
@@ -35,6 +34,7 @@ final class Consumer extends Command
             ];
 
             // Performing a lengthy process such as: sleep(3)
+
             sleep(3);
 
             $connection->publish($rpcResponse, $reply_to, '', $correlation_id);

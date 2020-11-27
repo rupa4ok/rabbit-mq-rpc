@@ -14,10 +14,10 @@ class AmqpHelper
     private AMQPChannel $channel;
     private string $callback = '';
 
-    public function __construct(AMQPStreamConnection $connect)
+    public function __construct()
     {
-        $this->connect = $connect;
-        $this->channel = $connect->channel();
+        $this->connect = AmqpConnection::connect();
+        $this->channel = $this->connect->channel();
     }
 
     public function initChannel(string $queue): void
@@ -97,10 +97,5 @@ class AmqpHelper
     {
         $this->channel->close();
         $this->connect->close();
-    }
-
-    public function getChannel(): AMQPChannel
-    {
-        return $this->channel;
     }
 }

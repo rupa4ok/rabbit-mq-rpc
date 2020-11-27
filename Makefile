@@ -1,4 +1,4 @@
-init: docker-network docker-down-clear docker-pull docker-build docker-up composer-install
+init: docker-network docker-down-clear docker-build docker-up composer-install
 
 docker-network:
 	docker network create --driver=bridge --subnet=192.168.221.0/24 rpc-network || true
