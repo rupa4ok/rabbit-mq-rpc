@@ -21,28 +21,25 @@ final class Consumer extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $connection = new AmqpHelper(AmqpConnection::connect());
+        $connection->prefetch();
         $connection->initChannel('example');
-        $connection->callBackInit();
 
-        $result = null;
-        $callback = function (AMQPMessage $res) use (&$result, &$body): void {
-            $body = json_decode($res->getBody(), true);
-            $result = $body['response'] ?? 'error';
+        $callback = function (AMQPMessage $req) use ($connection): void {
+            $request = json_decode($req->getBody(), true);
+            $reply_to = $req->get('reply_to');
+            $correlation_id = $req->get('correlation_id');
+
+            $rpcResponse = [
+                'request' => $request['number'],
+                'response' => $request['number'] + rand(1, 10)
+            ];
+
+            $connection->publish($rpcResponse, $reply_to, '', $correlation_id);
         };
 
-        $lead = [];
-
-        $connection->consume($callback);
-        $connection->publish($lead, 'example');
-
-        $timeout = 60;
-
-        try {
-            $connection->wait((string)$result, $timeout);
-        } catch (\RuntimeException $e) {
-            //
-        }
-
+        $consumerTag = 'example_' . getmypid();
+        $connection->basicConsume('example', $consumerTag, $callback);
+        $connection->basicWait(100);
         $connection->close();
 
         return self::SUCCESS;

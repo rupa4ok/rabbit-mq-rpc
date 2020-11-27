@@ -20,3 +20,6 @@ composer-install:
 
 consume:
 	docker-compose run --rm rpc-php-cli bin/console consume
+
+publish:
+	docker-compose run --rm rpc-php-cli bin/console publish

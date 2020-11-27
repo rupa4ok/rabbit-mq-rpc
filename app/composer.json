@@ -1,6 +1,7 @@
 {
     "require": {
         "php": "^7.4.7",
+        "ext-json": "*",
         "symfony/console": "^5.1",
         "symfony/dependency-injection": "^5.1",
         "php-amqplib/php-amqplib": "^2.12"

@@ -24,13 +24,13 @@ final class Publisher extends Command
         $connection->initChannel('example');
         $connection->callBackInit();
 
-        $result = null;
         $callback = function (AMQPMessage $res) use (&$result, &$body): void {
+            /** @psalm-var array */
             $body = json_decode($res->getBody(), true);
             $result = $body['response'] ?? 'error';
         };
 
-        $example = ['id' => '238ad38e-192f-4595-b510-45c651373ded'];
+        $example = ['number' => $number = rand(1, 10)];
         $connection->consume($callback);
         $connection->publish($example, 'example');
 
@@ -39,10 +39,14 @@ final class Publisher extends Command
         try {
             $connection->wait((string)$result, $timeout);
         } catch (\RuntimeException $e) {
-            //
+            //@TODO implement logger interface
         }
 
         $connection->close();
+
+        $response = $body['response'];
+        $output->writeln("<comment>Publisher request: $number</comment>");
+        $output->writeln("<comment>Consumer response: $response</comment>");
 
         return self::SUCCESS;
     }
