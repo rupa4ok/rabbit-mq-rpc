@@ -34,6 +34,9 @@ final class Consumer extends Command
                 'response' => $request['number'] + rand(1, 10)
             ];
 
+            // Performing a lengthy process such as: sleep(3)
+            sleep(3);
+
             $connection->publish($rpcResponse, $reply_to, '', $correlation_id);
         };
 
