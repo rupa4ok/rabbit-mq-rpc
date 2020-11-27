@@ -20,7 +20,7 @@ final class Publisher extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $connection = new AmqpHelper(AmqpConnection::connect());
+        $connection = new AmqpHelper();
         $connection->initChannel('example');
         $connection->callBackInit();
 
@@ -30,7 +30,9 @@ final class Publisher extends Command
             $result = $body['response'] ?? 'error';
         };
 
+        /** Sending data */
         $example = ['number' => $number = rand(1, 10)];
+
         $connection->consume($callback);
         $connection->publish($example, 'example');
 
