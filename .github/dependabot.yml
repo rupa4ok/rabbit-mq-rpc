@@ -2,7 +2,7 @@ version: 2
 
 updates:
   - package-ecosystem: "composer"
-    directory: "/app/"
+    directory: "/"
     allow:
       - dependency-type: "all"
     rebase-strategy: "auto"
@@ -12,6 +12,20 @@ updates:
 
   - package-ecosystem: "npm"
     directory: "/"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "composer"
+    directory: "/app"
+    allow:
+      - dependency-type: "all"
+    rebase-strategy: "auto"
+    schedule:
+      interval: "daily"
+    versioning-strategy: "auto"
+
+  - package-ecosystem: "npm"
+    directory: "/app"
     schedule:
       interval: "daily"
     ignore:
