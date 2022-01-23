@@ -4,7 +4,7 @@
         "ext-json": "*",
         "symfony/console": "^5.1",
         "symfony/dependency-injection": "^5.1",
-        "php-amqplib/php-amqplib": "^2.12"
+        "php-amqplib/php-amqplib": "^3.1"
     },
     "autoload": {
     "psr-4": {
